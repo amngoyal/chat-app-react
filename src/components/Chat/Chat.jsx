@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import queryString from 'query-string';
 import io from 'socket.io-client';
 import './Chat.css'
-import { InfoBar, Input, Messages } from '../index'
+import { InfoBar, Input, Messages, TextContainer } from '../index'
 
 let socket;
 
@@ -10,6 +10,7 @@ const Chat = ({ location }) => {
 
     const [name, setName] = useState("");
     const [room, setRoom] = useState("");
+    const [users, setUsers] = useState('');
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState('')
 
@@ -38,29 +39,36 @@ const Chat = ({ location }) => {
         socket.on("message", message => {
           setMessages(msgs => [...msgs, message]);
         });
+
+        socket.on("roomData", ({ users }) => {
+          setUsers(users);
+        });
     },  [ ]);
-    const sendMessage = (event) => {
-        event.preventDefault();
-        if (message) {
-            socket.emit('sendMessage', message, () => setMessage(''))
+
+
+        const sendMessage = (event) => {
+            event.preventDefault();
+            if (message) {
+                socket.emit('sendMessage', message, () => setMessage(''))
+            }
+
         }
 
-    }
+        console.log(messages);
+        console.log(message);
 
-    console.log(messages);
-    console.log(message);
+        return (
+            <div className='outerContainer'>
+                <div className='container'>
 
-    return (
-        <div className='outerContainer'>
-            <div className='container'>
-
-                <InfoBar room={room} />
-                <Messages messages={messages} name={name}></Messages>
-                <Input message={message} setMessage={setMessage} sendMessage={sendMessage}></Input>
+                    <InfoBar room={room} />
+                    <Messages messages={messages} name={name}></Messages>
+                    <Input message={message} setMessage={setMessage} sendMessage={sendMessage}></Input>
+                </div>
+                <TextContainer users={users}/>
             </div>
-        </div>
-    );
-}
+        );
+    }
 
 export default Chat;
 
