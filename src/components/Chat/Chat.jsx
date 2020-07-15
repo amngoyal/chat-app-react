@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import queryString from 'query-string';
 import io from 'socket.io-client';
 import './Chat.css'
-import { InfoBar, Input } from '../index'
+import { InfoBar, Input, Messages } from '../index'
 
 let socket;
 
@@ -34,14 +34,11 @@ const Chat = ({ location }) => {
 
     }, [ENDPOINT, location.search]);
 
-    useEffect(() => {
-
-        socket.on('message', (message) => {
-            setMessages([...messages, message]);
-        })
-
-    }, [messages]);
-
+    useEffect(( ) => {
+        socket.on("message", message => {
+          setMessages(msgs => [...msgs, message]);
+        });
+    },  [ ]);
     const sendMessage = (event) => {
         event.preventDefault();
         if (message) {
@@ -58,6 +55,7 @@ const Chat = ({ location }) => {
             <div className='container'>
 
                 <InfoBar room={room} />
+                <Messages messages={messages} name={name}></Messages>
                 <Input message={message} setMessage={setMessage} sendMessage={sendMessage}></Input>
             </div>
         </div>
