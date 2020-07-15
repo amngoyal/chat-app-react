@@ -52,11 +52,8 @@ const Chat = ({ location }) => {
                 socket.emit('sendMessage', message, () => setMessage(''))
             }
 
-        }
-
-        console.log(messages);
-        console.log(message);
-
+    }
+    
         return (
             <div className='outerContainer'>
                 <div className='container'>
